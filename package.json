@@ -1,0 +1,20 @@
+{
+  "name": "javascriptpattern",
+  "version": "1.0.0",
+  "description": "Javascript Design Pattern Study",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jan-wong/JavascriptPattern.git"
+  },
+  "author": "Jan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jan-wong/JavascriptPattern/issues"
+  },
+  "homepage": "https://github.com/jan-wong/JavascriptPattern#readme",
+  "devDependencies": {}
+}
