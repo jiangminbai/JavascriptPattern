@@ -1,15 +1,15 @@
 /**
- * 一个比较完整的遥控器功能
+ * 一个比较完整的命令模式
  */
 
  /**
   * 遥控器类
-  * Invoker类的作用即是存储命令对象，并且可以对命令对象进行相应的操作
+  * Invoker类的拥有装载命令对象的容器，并且可以对命令对象进行相应的操作
   */
 class Control {
   constructor() {
-    this.onCommands = []; // 开命令对象集合
-    this.offCommands = []; // 关命令对象集合
+    this.onCommands = []; // 装载开命令对象的容器
+    this.offCommands = []; // 装载关命令对象的容器
   }
 
   // slot 表示为插槽的位置
@@ -152,7 +152,7 @@ class CellingFanOffCommand extends Command {
     this.cellingFan = cellingFan;
   }
   execute() {
-    this.cellingFan.on();
+    this.cellingFan.off();
   }
 }
 
