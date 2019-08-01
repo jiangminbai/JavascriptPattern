@@ -3,6 +3,7 @@
 /**
  * 迭代器模式:提供了一种方法可以顺序访问聚合对象中的各个元素，而又不暴露其内部实现。
  * 角色：迭代器接口-具体迭代器类、菜单接口(创建一个迭代器)-具体菜单类、女招待员类
+ * 注意：对于迭代器来说，数据结构可以是用顺序或者无序的，不可以对迭代器所取出元素大小顺序做假设。
  */
 
 // 菜单项类
@@ -86,6 +87,28 @@ class DinerMenuIterator implements MyIterator {
   }
 }
 
+// 具体迭代器类-咖啡菜单迭代器类
+class CafeMenuIterator implements MyIterator {
+  position: number;
+  items: Map<number, MenuItem>;
+
+  constructor(items: Map<number, MenuItem>) {
+    this.position = 0;
+    this.items = items;
+  }
+
+  hasNext(): boolean {
+    if (this.items.get(this.position)) return true;
+    return false;
+  }
+
+  next(): MenuItem {
+    const menuItem = this.items.get(this.position);
+    this.position++;
+    return menuItem;
+  }
+}
+
 // 菜单接口
 interface Menu {
   createIterator(): MyIterator;
@@ -158,24 +181,53 @@ class DinerMenu implements Menu {
     return new DinerMenuIterator(this.menuItems);
   }
 }
+// 咖啡菜单类 -> menuItem存储在Map中
+class CafeMenu implements Menu {
+  menuItems: Map<number, MenuItem>;
+  numberOfItems: number;
+
+  constructor() {
+    this.numberOfItems = 0;
+    this.menuItems = new Map();
+
+    this.addItem('veggie burger and air fries', 'veggie burger on a whole wheat bun, lettuce, tomato and fries', true, 3.99);
+    this.addItem('soup of the day', 'a cup of the soup of the day, with a side salad', false, 3.69);
+    this.addItem('burrito', 'a large burrito, with whole pinto beans, salsa, guacamole', true, 4.29);
+  }
+
+  addItem(name: string, description: string, vegetarian: boolean, price: number) {
+    const item = new MenuItem(name, description, vegetarian, price);
+    this.menuItems.set(this.numberOfItems, item);
+    this.numberOfItems++;
+  }
+
+  createIterator(): MyIterator {
+    return new CafeMenuIterator(this.menuItems);
+  }
+}
 
 // 女招待员类
 class Waitress {
   pancakeHouseMenu: Menu;
   dinerMenu: Menu;
+  cafeMenu: Menu;
 
-  constructor(pancakeHouseMenu: Menu, dinerMenu: Menu) {
+  constructor(pancakeHouseMenu: Menu, dinerMenu: Menu, cafeMenu: Menu) {
     this.pancakeHouseMenu = pancakeHouseMenu;
     this.dinerMenu = dinerMenu;
+    this.cafeMenu = cafeMenu;
   }
 
   printMenu() {
     const pacakeIterator: MyIterator = this.pancakeHouseMenu.createIterator();
     const dinerIterator: MyIterator = this.dinerMenu.createIterator();
+    const cafeIterator: MyIterator = this.cafeMenu.createIterator();
     console.log('...pacakeHouseMenu...');
     this.iteratorMenu(pacakeIterator);
     console.log('...dinerMenu...');
     this.iteratorMenu(dinerIterator);
+    console.log('...cafeMenu...');
+    this.iteratorMenu(cafeIterator);
   }
 
   iteratorMenu(iterator: MyIterator) {
@@ -186,5 +238,6 @@ class Waitress {
 }
 const pancakeMenu = new PancakeHouseMenu();
 const dinerMenu = new DinerMenu();
-const waitress = new Waitress(pancakeMenu, dinerMenu);
+const cafeMenu = new CafeMenu();
+const waitress = new Waitress(pancakeMenu, dinerMenu, cafeMenu);
 waitress.printMenu();
