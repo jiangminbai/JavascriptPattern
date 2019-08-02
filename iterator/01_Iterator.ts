@@ -4,6 +4,7 @@
  * 迭代器模式:提供了一种方法可以顺序访问聚合对象中的各个元素，而又不暴露其内部实现。
  * 角色：迭代器接口-具体迭代器类、菜单接口(创建一个迭代器)-具体菜单类、女招待员类
  * 注意：对于迭代器来说，数据结构可以是用顺序或者无序的，不可以对迭代器所取出元素大小顺序做假设。
+ * es6 增加了新语法 for/of, 不需要显式创建迭代器，就可以遍历集合
  */
 
 // 菜单项类
@@ -208,36 +209,28 @@ class CafeMenu implements Menu {
 
 // 女招待员类
 class Waitress {
-  pancakeHouseMenu: Menu;
-  dinerMenu: Menu;
-  cafeMenu: Menu;
+  menuArr: Menu[]; // 使用数组的方式存储菜单集合
 
-  constructor(pancakeHouseMenu: Menu, dinerMenu: Menu, cafeMenu: Menu) {
-    this.pancakeHouseMenu = pancakeHouseMenu;
-    this.dinerMenu = dinerMenu;
-    this.cafeMenu = cafeMenu;
+  constructor(menuArr: Menu[]) {
+    this.menuArr = menuArr;
   }
 
   printMenu() {
-    const pacakeIterator: MyIterator = this.pancakeHouseMenu.createIterator();
-    const dinerIterator: MyIterator = this.dinerMenu.createIterator();
-    const cafeIterator: MyIterator = this.cafeMenu.createIterator();
-    console.log('...pacakeHouseMenu...');
-    this.iteratorMenu(pacakeIterator);
-    console.log('...dinerMenu...');
-    this.iteratorMenu(dinerIterator);
-    console.log('...cafeMenu...');
-    this.iteratorMenu(cafeIterator);
+    this.iteratorMenu(this.menuArr);
   }
 
-  iteratorMenu(iterator: MyIterator) {
-    while(iterator.hasNext()) {
-      console.log(iterator.next().getName());
+  iteratorMenu(menuArr: Menu[]) {
+    for (let i=0; i<menuArr.length; i++) {
+      const iterator = menuArr[i].createIterator();
+      console.log(i);
+      while(iterator.hasNext()) {
+        console.log(iterator.next().getName());
+      }
     }
   }
 }
 const pancakeMenu = new PancakeHouseMenu();
 const dinerMenu = new DinerMenu();
 const cafeMenu = new CafeMenu();
-const waitress = new Waitress(pancakeMenu, dinerMenu, cafeMenu);
+const waitress = new Waitress([pancakeMenu, dinerMenu, cafeMenu]);
 waitress.printMenu();
