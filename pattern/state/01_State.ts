@@ -118,7 +118,7 @@ class SoldOutState implements State {
 }
 
 // 糖果机类
-class GumballMachine {
+export class GumballMachine {
   // 糖果机的几种状态
   private readonly SOLD_OUT: SoldOutState;
   private readonly NO_QUARTER: NoQuarterState;
@@ -188,5 +188,9 @@ class GumballMachine {
 
   getCount() {
     return this.count;
+  }
+
+  getState() {
+    return this.state;
   }
 }
