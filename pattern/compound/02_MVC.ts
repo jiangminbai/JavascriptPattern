@@ -150,7 +150,7 @@ abstract class Widget {
 }
 
 /**
- * 视图控件类
+ * 视图控件类系列
 **/
 
 // 节拍条控件类
@@ -188,7 +188,89 @@ class BeatView extends Widget {
   }
 }
 
-// 
+// DJ 控制器类
+class DJController extends Widget {
+  elemDJController: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-controller">
+      DJ Controller
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemDJController = this.el.querySelector('.dj-controller');
+  }
+}
+
+// DJ菜单控件类
+class DJMenus extends Widget {
+  elemDJMenus: HTMLElement;
+  elemDJMenusStart: HTMLElement;
+  elemDJMenusStop: HTMLElement;
+  elemDJMenusQuit: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-menus">
+      <div class="dj-menus__start">Start</div>
+      <div class="dj-menus__stop">Stop</div>
+      <div class="dj-menus__quit">Quit</div>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemDJMenus = this.el.querySelector('.dj-menus');
+    this.elemDJMenusStart = this.el.querySelector('.dj-menus__start');
+    this.elemDJMenusStop = this.el.querySelector('.dj-menus__stop');
+    this.elemDJMenusQuit = this.el.querySelector('.dj-menus__quit');
+  }
+}
+
+// DJ 输入控件类
+class DJInput extends Widget {
+  elemDJInput: HTMLElement;
+  elemDJInputInner: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-input">
+      Enter BPM <input class="dj-input-inner" />
+    </div>`
+
+    this.el = this.createFragment(tpl);
+    this.elemDJInput = this.el.querySelector('.dj-input');
+    this.elemDJInputInner = this.el.querySelector('.dj-input-inner');
+  }
+}
+
+// DJ 按钮类
+class DJButton extends Widget {
+  elemDJSettingButton: HTMLElement;
+
+  render() {
+    const tpl = `<button>Set</button>`
+    this.el = this.createFragment(tpl);
+    this.elemDJSettingButton = this.el.querySelector('button');
+  }
+}
+
+// DJ 设置类
+class DJSetting extends Widget {
+  elemDJSetting: HTMLElement;
+  elemDJSettingLeft: HTMLElement;
+  elemDJSettingRight: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-setting">
+      <span class="dj-setting-left"><<</span><span class="dj-setting-right">>></span>
+    </div>`
+    this.el = this.createFragment(tpl);
+    this.elemDJSetting = this.el.querySelector('.dj-setting');
+    this.elemDJSettingLeft = this.el.querySelector('.dj-setting-left');
+    this.elemDJSettingRight = this.el.querySelector('.dj-setting-right');
+  }
+}
 
 // 视图类
 class DJView implements BeatObserver, BPMObserver {
