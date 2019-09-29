@@ -1,4 +1,218 @@
 #!/usr/bin/env ts-node
 /**
- * mvc
+ * MVC模式(模型-视图-控制器):
  */
+
+ // 定序器类-用来产生节拍的
+class Sequencer {
+  intervalID: number;
+  delay: number;
+  callback: Function;
+
+  // 设置节拍数
+  setBPM(beatCount: number) {
+    clearInterval(this.intervalID);
+    this.start(beatCount);
+  }
+
+  // 开始定序器
+  start(beatCount: number) {
+    this.delay = 60 * 1000 / beatCount;
+    this.intervalID = setInterval(() => {
+      if (this.callback) this.callback();
+    }, this.delay || 1000);
+  }
+
+  // 停止定序器
+  stop() {
+    clearInterval(this.intervalID);
+  }
+
+  // 节拍调用
+  setBeatCallback(cb: Function) {
+    this.callback = cb;
+  }
+}
+
+// 节拍监听器接口
+interface BeatObserver {
+  updateBeat(): void;
+}
+
+// 节拍数监听器接口
+interface BPMObserver {
+  updateBPM(): void;
+}
+
+// 节拍模型接口
+interface BeatModelInterface {
+  // 给控制器调用的方法，对模型做出适当的处理
+  initialize(): void;
+  on(): void;
+  off(): void;
+  setBPM(bpm: number): void;
+  
+  // 允许视图和控制器获得状态并变成观察者的
+  getBPM(): number;
+  registerBeatObserver(o: BeatObserver): void;
+  removeBeatObserver(o: BeatObserver): void;
+  registerBPMObserver(o: BPMObserver): any;
+  removeBPMObserver(o: BPMObserver): void;
+}
+
+// 节拍模型类
+class BeatModel implements BeatModelInterface {
+  sequencer: Sequencer;
+  bpm: number;
+  beatObservers: BeatObserver[];
+  bpmObservers: BPMObserver[];
+
+  // 给控制器调用的方法，对模型做出适当的处理
+  initialize(): void {
+    this.sequencer = new Sequencer();
+    this.sequencer.setBeatCallback(() => this.beatEvent);
+  }
+
+  on(): void {
+    this.sequencer.start(60);
+  }
+
+  off(): void {
+    this.sequencer.stop();
+  }
+
+  setBPM(bpm: number) {
+    this.bpm = bpm;
+    this.sequencer.setBPM(this.bpm);
+    this.notifyBPMObservers();
+  }
+
+  beatEvent(): void {
+    this.notifyBeatObservers();
+  }
+
+  // 允许视图和控制器获取状态并注册为观察者 
+  getBPM(): number {
+    return this.bpm;
+  }
+
+  registerBeatObserver(o: BeatObserver): void {
+    this.beatObservers.push(o);
+  }
+
+  removeBeatObserver(o: BeatObserver): void {
+    const i = this.beatObservers.indexOf(o);
+    if(i > -1) this.beatObservers.splice(i, 1);
+  }
+
+  registerBPMObserver(o: BPMObserver): void {
+    this.bpmObservers.push(o);
+  }
+
+  removeBPMObserver(o: BPMObserver): void {
+    const i = this.bpmObservers.indexOf(o);
+    if (i > -1) this.bpmObservers.splice(i, 1);
+  }
+
+  notifyBeatObservers() {
+    for (let i = 0; i < this.beatObservers.length; i++) {
+      this.beatObservers[i].updateBeat();
+    }
+  }
+
+  notifyBPMObservers() {
+    for (let i = 0; i < this.bpmObservers.length; i++) {
+      this.bpmObservers[i].updateBPM();
+    }
+  }
+}
+
+// 视图控件抽象类
+abstract class Widget {
+  el: DocumentFragment;
+
+  constructor() {
+    this.render();
+  }
+
+  // 渲染
+  abstract render(): void;
+
+  // 挂载
+  mounted(container: HTMLElement) {
+    container.appendChild(this.el);
+  }
+
+  // 将html字符串转换为DocumentFragment对象
+  createFragment(template: string): DocumentFragment {
+    return document.createRange().createContextualFragment(template);
+  }
+}
+
+/**
+ * 视图控件类
+**/
+
+// 节拍条控件类
+class BeatLabel extends Widget {
+  elemBeatLabel: HTMLElement;
+  elemBeatLabelBar: HTMLElement;
+  render() {
+    const tpl = 
+    `<div class="beat-label">
+      <div class="beat-label__bar"></div>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemBeatLabel = this.el.querySelector('.beat-label');
+    this.elemBeatLabelBar = this.el.querySelector('.beat-label_bar');
+  }
+}
+
+// 节拍显示条类
+class BeatView extends Widget {
+  elemBeatView: HTMLElement;
+  elemBeatViewText: HTMLElement;
+  elemBeatViewCount: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="beat-view">
+      <div class="beat-view__text">Current BPM: <span class="beat-view__count"><span></div>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemBeatView = this.el.querySelector('.beat-view');
+    this.elemBeatViewText = this.el.querySelector('.beat-view__text');
+    this.elemBeatViewText = this.el.querySelector('.beat-view__count');
+  }
+}
+
+// 
+
+// 视图类
+class DJView implements BeatObserver, BPMObserver {
+  model: BeatModelInterface;
+  controller: ControllerInterface;
+
+  constructor(model: BeatModelInterface, controller: ControllerInterface) {
+    this.model = model;
+    this.controller = controller;
+
+    this.model.registerBPMObserver(this);
+    this.model.registerBeatObserver(this);
+  }
+
+  // 创建所有的view组件
+  createView() {
+
+  }
+
+  updateBPM() {
+
+  }
+
+  updateBeat() {
+
+  }
+}
