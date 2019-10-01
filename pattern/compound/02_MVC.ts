@@ -39,9 +39,156 @@ interface BeatObserver {
   updateBeat(): void;
 }
 
-// 节拍数监听器接口
+// 节拍数监听器接口  
 interface BPMObserver {
   updateBPM(): void;
+}
+
+// 视图控件抽象类
+abstract class Widget {
+  el: DocumentFragment;
+
+  constructor() {
+    this.render();
+  }
+
+  // 渲染
+  abstract render(): void;
+
+  // 挂载
+  mounted(container: HTMLElement) {
+    container.appendChild(this.el);
+  }
+
+  // 将html字符串转换为DocumentFragment对象
+  createFragment(template: string): DocumentFragment {
+    return document.createRange().createContextualFragment(template);
+  }
+}
+
+/**
+ * 视图控件类系列
+**/
+
+// 节拍条控件类
+class BeatBar extends Widget {
+  elemBeatBar: HTMLElement;
+  elemBeatBarChart: HTMLElement;
+  render() {
+    const tpl = 
+    `<div class="beat-bar">
+      <div class="beat-bar__chart"></div>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemBeatBar = this.el.querySelector('.beat-bar');
+    this.elemBeatBarChart = this.el.querySelector('.beat-bar_chart');
+  }
+
+  setValue(val: number) {
+    this.elemBeatBarChart.style.width = '100%';
+  }
+}
+
+// 拍子数显示类
+class BPMStatus extends Widget {
+  elemBPMStatus: HTMLElement;
+  elemBPMStatusText: HTMLElement;
+  elemBPMStatusCount: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="bpm-status">
+      <div class="bpm-status__text">Current BPM: <span class="bpm-status__count"><span></div>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemBPMStatus = this.el.querySelector('.bpm-status');
+    this.elemBPMStatusText = this.el.querySelector('.bpm-status__text');
+    this.elemBPMStatusCount = this.el.querySelector('.bpm-status__count');
+  }
+
+  setText(val: string) {
+    this.elemBPMStatusCount.innerHTML = val;
+  }
+}
+
+// DJ 控制器类
+class DJController extends Widget {
+  elemDJController: HTMLElement;
+  elemStart: HTMLElement;
+  elemStop: HTMLElement;
+  elemQuit: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-controller">
+      <div>DJ Controller </div>
+      <button class="dj-controller-start">Start</button>
+      <button class="dj-controller-stop">Stop</button>
+      <button class="dj-controller-quit">Quit</button>
+    </div>`
+    this.el = this.createFragment(tpl);
+
+    this.elemDJController = this.el.querySelector('.dj-controller');
+    this.elemStart = this.el.querySelector('.dj-controller-start');
+    this.elemStop = this.el.querySelector('.dj-controller-stop');
+    this.elemQuit = this.el.querySelector('.dj-controller-quit');
+  }
+
+  setStartEnabled(enable: boolean) {
+    this.elemStart.setAttribute('disabled', String(!enable));
+  }
+
+  setStopEnabled(enable: boolean) {
+    this.elemStop.setAttribute('disabled', String(!enable));
+  }
+}
+
+// DJ 输入控件类
+class DJInput extends Widget {
+  elemDJInput: HTMLElement;
+  elemDJInputInner: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-input">
+      Enter BPM <input class="dj-input-inner" />
+    </div>`
+
+    this.el = this.createFragment(tpl);
+    this.elemDJInput = this.el.querySelector('.dj-input');
+    this.elemDJInputInner = this.el.querySelector('.dj-input-inner');
+  }
+}
+
+// DJ 按钮类
+class DJButton extends Widget {
+  elemDJSettingButton: HTMLElement;
+
+  render() {
+    const tpl = `<button>Set</button>`
+    this.el = this.createFragment(tpl);
+    this.elemDJSettingButton = this.el.querySelector('button');
+  }
+}
+
+// DJ 设置类
+class DJSetting extends Widget {
+  elemDJSetting: HTMLElement;
+  elemDJSettingLeft: HTMLElement;
+  elemDJSettingRight: HTMLElement;
+
+  render() {
+    const tpl = 
+    `<div class="dj-setting">
+      <span class="dj-setting-left"><<</span><span class="dj-setting-right">>></span>
+    </div>`
+    this.el = this.createFragment(tpl); 
+    this.elemDJSetting = this.el.querySelector('.dj-setting');
+    this.elemDJSettingLeft = this.el.querySelector('.dj-setting-left');
+    this.elemDJSettingRight = this.el.querySelector('.dj-setting-right');
+  }
 }
 
 // 节拍模型接口
@@ -127,155 +274,16 @@ class BeatModel implements BeatModelInterface {
   }
 }
 
-// 视图控件抽象类
-abstract class Widget {
-  el: DocumentFragment;
-
-  constructor() {
-    this.render();
-  }
-
-  // 渲染
-  abstract render(): void;
-
-  // 挂载
-  mounted(container: HTMLElement) {
-    container.appendChild(this.el);
-  }
-
-  // 将html字符串转换为DocumentFragment对象
-  createFragment(template: string): DocumentFragment {
-    return document.createRange().createContextualFragment(template);
-  }
-}
-
-/**
- * 视图控件类系列
-**/
-
-// 节拍条控件类
-class BeatLabel extends Widget {
-  elemBeatLabel: HTMLElement;
-  elemBeatLabelBar: HTMLElement;
-  render() {
-    const tpl = 
-    `<div class="beat-label">
-      <div class="beat-label__bar"></div>
-    </div>`
-    this.el = this.createFragment(tpl);
-
-    this.elemBeatLabel = this.el.querySelector('.beat-label');
-    this.elemBeatLabelBar = this.el.querySelector('.beat-label_bar');
-  }
-}
-
-// 节拍显示条类
-class BeatView extends Widget {
-  elemBeatView: HTMLElement;
-  elemBeatViewText: HTMLElement;
-  elemBeatViewCount: HTMLElement;
-
-  render() {
-    const tpl = 
-    `<div class="beat-view">
-      <div class="beat-view__text">Current BPM: <span class="beat-view__count"><span></div>
-    </div>`
-    this.el = this.createFragment(tpl);
-
-    this.elemBeatView = this.el.querySelector('.beat-view');
-    this.elemBeatViewText = this.el.querySelector('.beat-view__text');
-    this.elemBeatViewText = this.el.querySelector('.beat-view__count');
-  }
-}
-
-// DJ 控制器类
-class DJController extends Widget {
-  elemDJController: HTMLElement;
-
-  render() {
-    const tpl = 
-    `<div class="dj-controller">
-      DJ Controller
-    </div>`
-    this.el = this.createFragment(tpl);
-
-    this.elemDJController = this.el.querySelector('.dj-controller');
-  }
-}
-
-// DJ菜单控件类
-class DJMenus extends Widget {
-  elemDJMenus: HTMLElement;
-  elemDJMenusStart: HTMLElement;
-  elemDJMenusStop: HTMLElement;
-  elemDJMenusQuit: HTMLElement;
-
-  render() {
-    const tpl = 
-    `<div class="dj-menus">
-      <div class="dj-menus__start">Start</div>
-      <div class="dj-menus__stop">Stop</div>
-      <div class="dj-menus__quit">Quit</div>
-    </div>`
-    this.el = this.createFragment(tpl);
-
-    this.elemDJMenus = this.el.querySelector('.dj-menus');
-    this.elemDJMenusStart = this.el.querySelector('.dj-menus__start');
-    this.elemDJMenusStop = this.el.querySelector('.dj-menus__stop');
-    this.elemDJMenusQuit = this.el.querySelector('.dj-menus__quit');
-  }
-}
-
-// DJ 输入控件类
-class DJInput extends Widget {
-  elemDJInput: HTMLElement;
-  elemDJInputInner: HTMLElement;
-
-  render() {
-    const tpl = 
-    `<div class="dj-input">
-      Enter BPM <input class="dj-input-inner" />
-    </div>`
-
-    this.el = this.createFragment(tpl);
-    this.elemDJInput = this.el.querySelector('.dj-input');
-    this.elemDJInputInner = this.el.querySelector('.dj-input-inner');
-  }
-}
-
-// DJ 按钮类
-class DJButton extends Widget {
-  elemDJSettingButton: HTMLElement;
-
-  render() {
-    const tpl = `<button>Set</button>`
-    this.el = this.createFragment(tpl);
-    this.elemDJSettingButton = this.el.querySelector('button');
-  }
-}
-
-// DJ 设置类
-class DJSetting extends Widget {
-  elemDJSetting: HTMLElement;
-  elemDJSettingLeft: HTMLElement;
-  elemDJSettingRight: HTMLElement;
-
-  render() {
-    const tpl = 
-    `<div class="dj-setting">
-      <span class="dj-setting-left"><<</span><span class="dj-setting-right">>></span>
-    </div>`
-    this.el = this.createFragment(tpl);
-    this.elemDJSetting = this.el.querySelector('.dj-setting');
-    this.elemDJSettingLeft = this.el.querySelector('.dj-setting-left');
-    this.elemDJSettingRight = this.el.querySelector('.dj-setting-right');
-  }
-}
-
 // 视图类
 class DJView implements BeatObserver, BPMObserver {
   model: BeatModelInterface;
   controller: ControllerInterface;
+  beatBar: BeatBar;
+  bpmStatus: BPMStatus;
+  djController: DJController;
+  djInput: DJInput;
+  djButton: DJButton;
+  djSetting: DJSetting;
 
   constructor(model: BeatModelInterface, controller: ControllerInterface) {
     this.model = model;
@@ -285,16 +293,132 @@ class DJView implements BeatObserver, BPMObserver {
     this.model.registerBeatObserver(this);
   }
 
-  // 创建所有的view组件
+  // 创建显示视图部分
   createView() {
+    const showView = document.createElement('div');
+    showView.classList.add('show-view');
+    this.bpmStatus = new BPMStatus();
+    this.beatBar = new BeatBar();
+    this.beatBar.mounted(showView);
+    this.bpmStatus.mounted(showView);
+  }
 
+  // 创建控制视图部分
+  createControls() {
+    const controllerView = document.createElement('div');
+    controllerView.classList.add('controller-view');
+    this.djController = new DJController();
+    this.djInput = new DJInput();
+    this.djButton = new DJButton();
+    this.djSetting = new DJSetting();
+    this.djController.mounted(controllerView);
+    this.djInput.mounted(controllerView);
+    this.djButton.mounted(controllerView);
+    this.djSetting.mounted(controllerView);
   }
 
   updateBPM() {
-
+    const bpm = this.model.getBPM();
+    if (bpm === 0) {
+      this.bpmStatus.setText('offline');
+    } else {
+      this.bpmStatus.setText(String(bpm));
+    }
   }
 
   updateBeat() {
+    this.beatBar.setValue(100);
+  }
 
+  enableStartBeat() {
+    this.djController.setStartEnabled(true);
+  }
+
+  disableStartBeat() {
+    this.djController.setStartEnabled(false);
+  }
+
+  enableStopBeat() {
+    this.djController.setStopEnabled(true);
+  }
+
+  disableStopBeat() {
+    this.djController.setStopEnabled(false);
+  }
+
+  setBPM(bpm: number) {
+    this.controller.setBPM(bpm);
+  }
+
+  increaseBPM() {
+    this.controller.increaseBPM();
+  }
+
+  decreaseBPM() {
+    this.controller.decreaseBPM();
   }
 }
+
+// 控制器接口
+interface ControllerInterface {
+  start(): void;
+  stop(): void;
+  increaseBPM(): void;
+  decreaseBPM(): void;
+  setBPM(bpm: number): void;
+}
+
+// 节拍控制器类
+class BeatController implements ControllerInterface {
+  model: BeatModelInterface;
+  view: DJView;
+
+  constructor(model: BeatModelInterface) {
+    this.model = model;
+    this.view = new DJView(model, this);
+    this.view.createView();
+    this.view.createControls();
+    this.view.disableStopBeat();
+    this.view.enableStartBeat();
+    this.model.initialize();
+  }
+
+  start() {
+    this.model.on();
+    this.view.enableStartBeat();
+    this.view.disableStopBeat();
+  }
+
+  stop() {
+    this.model.off();
+    this.view.enableStopBeat();
+    this.view.disableStartBeat();
+  }
+
+  increaseBPM() {
+    const bpm = this.model.getBPM();
+    this.model.setBPM(bpm + 1);
+  }
+
+  decreaseBPM() {
+    const bpm = this.model.getBPM();
+    this.model.setBPM(bpm - 1);
+  }
+
+  setBPM(bpm: number) {
+    this.model.setBPM(bpm);
+  }
+}
+
+// test
+class MainDrive {
+  model: BeatModelInterface;
+  controller: ControllerInterface;
+
+  constructor() {
+    this.model = new BeatModel();
+    this.controller = new BeatController(this.model);
+  }
+}
+
+new MainDrive();
