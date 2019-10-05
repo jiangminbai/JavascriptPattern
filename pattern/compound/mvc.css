@@ -1,0 +1,41 @@
+body {
+  display: flex;
+  align-content: flex-end;
+}
+.show-view {
+  width: 300px;
+  height: 300px;
+  border: 1px solid #ccc;
+}
+.beat-bar {
+  height: 30px;
+  width: 100%;
+  border: 1px solid blue;
+  box-sizing: border-box;
+}
+.bpm-status {
+  margin-top: 10px;
+}
+.beat-bar__chart {
+  height: 100%;
+  width: 50px;
+  background: rgb(177, 233, 177);
+}
+.controller-view {
+  width: 300px;
+  height: 300px;
+  border: 1px solid #ccc;
+}
+.dj-input {
+  margin-top: 10px;
+}
+.dj-button {
+  margin-top: 10px;
+  width: 100%;
+}
+.dj-setting {
+  margin-top: 10px;
+}
+.dj-setting button {
+  width: 50%;
+}

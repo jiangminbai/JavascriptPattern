@@ -1,6 +1,13 @@
 #!/usr/bin/env ts-node
 /**
- * MVC模式(模型-视图-控制器):
+ * MVC模式(模型-视图-控制器): 
+ * 视图：负责呈现模型状态，通过观察者模式的方式接受模型状态的改变，通常也直接从模型中取得业务状态
+ * 模型：模型持有所有的业务状态和处理业务逻辑
+ * 控制器：负责改变视图UI状态和模型状态
+ * 使用的模式：
+ * 1.模型和视图|控制器之间使用的是观察者模式
+ * 2.视图和控制器之间使用的是策略模式，视图只关心系统中可视的部分，对于任何界面的行为都委托给控制器处理，控制器负责和模型交互来传递用户请求。
+ * 3.视图内部使用的是组合模式
  */
 
  // 定序器类-用来产生节拍的
@@ -167,7 +174,7 @@ class DJButton extends Widget {
   elemDJSettingButton: HTMLElement;
 
   render() {
-    const tpl = `<button>Set</button>`
+    const tpl = `<button class="dj-button">Set</button>`
     this.el = this.createFragment(tpl);
     this.elemDJSettingButton = this.el.querySelector('button');
   }
@@ -182,9 +189,9 @@ class DJSetting extends Widget {
   render() {
     const tpl = 
     `<div class="dj-setting">
-      <span class="dj-setting-left"><<</span><span class="dj-setting-right">>></span>
+      <button class="dj-setting-left"><<</button><button class="dj-setting-right">>></button>
     </div>`
-    this.el = this.createFragment(tpl); 
+    this.el = this.createFragment(tpl);
     this.elemDJSetting = this.el.querySelector('.dj-setting');
     this.elemDJSettingLeft = this.el.querySelector('.dj-setting-left');
     this.elemDJSettingRight = this.el.querySelector('.dj-setting-right');
@@ -211,8 +218,8 @@ interface BeatModelInterface {
 class BeatModel implements BeatModelInterface {
   sequencer: Sequencer;
   bpm: number;
-  beatObservers: BeatObserver[];
-  bpmObservers: BPMObserver[];
+  beatObservers: BeatObserver[] = [];
+  bpmObservers: BPMObserver[] = [];
 
   // 给控制器调用的方法，对模型做出适当的处理
   initialize(): void {
@@ -301,6 +308,7 @@ class DJView implements BeatObserver, BPMObserver {
     this.beatBar = new BeatBar();
     this.beatBar.mounted(showView);
     this.bpmStatus.mounted(showView);
+    document.body.appendChild(showView);
   }
 
   // 创建控制视图部分
@@ -315,6 +323,7 @@ class DJView implements BeatObserver, BPMObserver {
     this.djInput.mounted(controllerView);
     this.djButton.mounted(controllerView);
     this.djSetting.mounted(controllerView);
+    document.body.appendChild(controllerView);
   }
 
   updateBPM() {
