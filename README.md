@@ -1,8 +1,11 @@
 ## Typescript设计模式的学习指南
 #### 一.面向对象的基础-面向对象的三大特性
 #### 二.面向对象的6种关系
-#### 三.[面向对象的9大原则](https://github.com/jan-wong/JavascriptPattern/blob/master/principle/principle.md)
+#### 三.[面向对象的9大原则](https://github.com/jan-wong/JavascriptPattern/blob/master/docs/principle.md)
 #### 四.23种基础设计模式
+创建型模式：涉及将对象实例化，这类模式都提供一个方法，将客户从所需实例化的对象解耦
+结构型模式：将类或对象组合到更大的结构中去
+行为型模式：涉及类或对象如何交互及分配职责
 - [x] **装饰者模式**
 - [x] **工厂模式**
   - [x] 简单工厂
@@ -23,6 +26,7 @@
 - [x] **复合模式**
   - [x] 简单的复合模式
   - [x] MVC
-#### 五.参考资料
+##### 五. [模式与反模式](https://github.com/jan-wong/JavascriptPattern/blob/master/docs/define.md)
+#### 六.参考资料
 - *《Java编程思想第四版》*
 - *《HeadFirst设计模式》*
