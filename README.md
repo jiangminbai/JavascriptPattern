@@ -29,6 +29,7 @@
 - [x] **生成器模式**
 - [x] **责任链模式**
 - [x] **复合模式**
+- [x] **享元模式**
   - [x] 简单的复合模式
   - [x] MVC
 ##### 五. [模式与反模式](https://github.com/jan-wong/JavascriptPattern/blob/master/docs/define.md)
