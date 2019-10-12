@@ -116,3 +116,5 @@ class Client {
 }
 
 new Client();
+
+export {}
