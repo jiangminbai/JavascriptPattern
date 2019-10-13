@@ -1,5 +1,5 @@
 ## Typescript设计模式的学习指南
-#### 一.面向对象的基础-面向对象的三大特性
+#### 一.面向对象的基础-面向对象的四大特性
 #### 二.面向对象的6种关系
 #### 三.[面向对象的9大原则](https://github.com/jan-wong/JavascriptPattern/blob/master/docs/principle.md)
 #### 四.23种基础设计模式
